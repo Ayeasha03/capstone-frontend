@@ -4,10 +4,9 @@ import HeroSection from './components/HeroSection';
 import FeatureCard from './components/FeatureCard';
 import AuthModal from './components/AuthModal';
 import MortgageCalculator from './components/MortgageCalculator';
-import UserDashboard from './components/UserDashboard';
 import PropertyDetails from './pages/PropertyDetails';
 import SearchResults from './pages/SearchResults';
-import Dashboard from './pages/Dashboard'; 
+import Dashboard from './pages/Dashboard';
 import Profile from './pages/Profile';
 import { useAuthContext } from './context/AuthContext';
 import SearchBar from './components/SearchBar';
@@ -75,7 +74,7 @@ const App = () => {
         <Routes>
           <Route path="/" element={<MortgageCalculator />} />
           <Route path="/dashboard" element={user ? <Dashboard /> : <Navigate to="/" />} />
-          <Route path="/profile" element={<Profile />} />
+          <Route path="/profile" element={user ? <Profile /> : <Navigate to="/" />} />
           <Route path="/propertyDetails/:id" element={<PropertyDetails />} />
           <Route path="/searchResults" element={<SearchResults />} />
         </Routes>

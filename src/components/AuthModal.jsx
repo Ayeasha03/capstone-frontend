@@ -3,6 +3,7 @@ import Modal from 'react-modal';
 import { Button } from './ui/Button';
 import { Input } from './ui/Input';
 import useAuth from '../hooks/useAuth';
+import { registerUser, loginUser } from '../api/auth.Api';
 
 // Set the app element for accessibility
 Modal.setAppElement('#root');
@@ -14,21 +15,21 @@ const AuthModal = ({ isOpen, onClose }) => {
   const [fullName, setFullName] = useState('');
   const [role, setRole] = useState('user');  // Default role is 'user'
 
-  const { performLogin, performRegister, isLoading, error, clearError } = useAuth();
+  const { login, isLoading, error, setError, clearError } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (isLogin) {
-      await performLogin(email, password);
-    } else {
-      await performRegister(email, password, fullName, role);
-      if (error === 'User already exists. Please sign in.') {
-        setIsLogin(true);
-        clearError();
+    try {
+      if (isLogin) {
+        const data = await loginUser(email, password);
+        login(data.user, data.token);
+      } else {
+        const data = await registerUser(fullName, email, password, role);
+        login(data.user, data.token);
       }
-    }
-    if (!error) {
       onClose();
+    } catch (err) {
+      setError(err.message);
     }
   };
 

@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import UserPreferencesForm from '../components/UserPreferencesForm';
 import PropertyRecommendations from '../components/PropertyRecommendations';
-import useAuth from '../hooks/useAuth';
+import { useAuthContext } from '../context/AuthContext';
 
 const Dashboard = () => {
-  const { user } = useAuth();
+  const { user } = useAuthContext();
   const [preferences, setPreferences] = useState({
     minPrice: undefined,
     maxPrice: undefined,

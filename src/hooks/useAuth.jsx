@@ -1,6 +1,7 @@
 import { useContext, useState } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { toast } from 'react-toastify';
+import { registerUser, loginUser } from '../api/auth.Api'; // Import your new functions
 
 const useAuth = () => {
   const { user, login, logout } = useContext(AuthContext);
@@ -11,22 +12,12 @@ const useAuth = () => {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await fetch('http://localhost:9000/api/v1/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
-      const data = await response.json();
-      if (response.ok) {
-        login(data.user); // Assuming response contains user data
-        toast.success('Login successful!');
-      } else {
-        setError(data.message);
-        toast.error(data.message);
-      }
+      const data = await loginUser(email, password);
+      login({ ...data.user, token: data.token }); // Pass the token as well
+      toast.success('Login successful!');
     } catch (error) {
-      setError('An error occurred. Please try again.');
-      toast.error('An error occurred. Please try again.');
+      setError(error.message);
+      toast.error(error.message);
     } finally {
       setIsLoading(false);
     }
@@ -36,30 +27,12 @@ const useAuth = () => {
     setIsLoading(true);
     setError(null);
     try {
-      const payload = { name: fullName, email, password, role };  // Include role in payload
-      console.log('Request Payload:', payload);  // Log payload
-      const response = await fetch('http://localhost:9000/api/v1/auth/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
-      });
-      const data = await response.json();
-      console.log('Response Data:', data);  // Log response data
-      if (response.ok) {
-        login(data.user); // Assuming response contains user data
-        toast.success('Registration successful!');
-      } else if (data.message === 'User already exists with this email') {
-        setError('User already exists. Please sign in.');
-        toast.info('User already exists. Please sign in.');
-      } else {
-        setError(data.message);
-        toast.error(data.message);
-      }
+      const data = await registerUser(fullName, email, password, role); // Use new function
+      login({ ...data.user, token: data.token }); // Pass the token as well
+      toast.success('Registration successful!');
     } catch (error) {
-      setError('An error occurred. Please try again.');
-      toast.error('An error occurred. Please try again.');
+      setError(error.message);
+      toast.error(error.message);
     } finally {
       setIsLoading(false);
     }
@@ -70,4 +43,4 @@ const useAuth = () => {
   return { user, isLoading, error, performLogin, performRegister, logout, clearError };
 };
 
-export default useAuth;  // Ensure the hook is exported as default
+export default useAuth;
