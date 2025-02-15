@@ -83,7 +83,7 @@ const App = () => {
 
       <Footer />
 
-      <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} />
+      <AuthModal isOpen={showAuthModal} onRequestClose={() => setShowAuthModal(false)} />
       <ChatbotIcon />
       <ToastContainer position="top-right" autoClose={3000} />
     </div>
